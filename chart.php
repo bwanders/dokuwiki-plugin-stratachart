@@ -36,7 +36,7 @@ $conf = array(
         'color' => '000001',
 
         // antialias the pie?
-        'antialias' => true
+        'antialias' => false
     )
 );
 
@@ -253,13 +253,16 @@ function render($width, $height, $data, $settings) {
     /** Draw Pie Chart **/
     if($settings['antialias']) {
         // antialiased render (by way of resampling superscaled render)
-        $canvas = imagecreatetruecolor($pieSize*4+8, $pieSize*4+8);
-        $canvasbg = hexcolor($canvas, $settings['background-color']);
-        imagefilledrectangle($canvas, 0,0, $pieSize*4+8, $pieSize*4+8, $canvasbg);
+        $aa = 4;
 
-        $cx = $cy = $pieSize*2+4;
-        $arcw = $arch = $pieSize*4;
+        $canvas = imagecreatetruecolor($pieSize*$aa+8, $pieSize*$aa+8);
+        $canvasbg = hexcolor($canvas, $settings['background-color']);
+        imagefilledrectangle($canvas, 0,0, $pieSize*$aa+8, $pieSize*$aa+8, $canvasbg);
+
+        $cx = $cy = $pieSize*($aa/2)+4;
+        $arcw = $arch = $pieSize*$aa;
     } else {
+        // clear render, so use direct canvas
         $canvas = $image;
 
         // center of pie
@@ -267,6 +270,7 @@ function render($width, $height, $data, $settings) {
         $arcw = $arch = $pieSize;
     }
 
+    // draw actual pie
     $startAngle = -90;
     foreach($slices as $key => $value) {
         if($value > 0) {
@@ -278,7 +282,7 @@ function render($width, $height, $data, $settings) {
 
     // finishe antialiasing business
     if($settings['antialias']){
-        imagecopyresampled($image, $canvas, $graphPadding,$graphPadding, 2,2, $pieSize,$pieSize, $pieSize*4+4,$pieSize*4+4);
+        imagecopyresampled($image, $canvas, $graphPadding,$graphPadding, 2,2, $pieSize,$pieSize, $pieSize*$aa+4,$pieSize*$aa+4);
         imagedestroy($canvas);
     }
 
