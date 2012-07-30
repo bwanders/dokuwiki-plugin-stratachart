@@ -38,6 +38,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
                     case 'width': $result['chart']['width'] = intval($value); break;
                     case 'height': $result['chart']['height'] = intval($value); break;
                     case 'legend': $result['chart']['legend'] = $value=='on'; break;
+                    case 'significance': $result['chart']['significance'] = intval($value); break;
                     default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
                 }
             }
@@ -126,6 +127,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             // pass optional settings
             if(isset($data['chart']['width'])) $params['w'] = $data['chart']['width'];
             if(isset($data['chart']['height'])) $params['h'] = $data['chart']['height'];
+            if(isset($data['chart']['significance'])) $params['significance'] = $data['chart']['significance'];
             if($this->getConf('antialias')) $params['aa'] = 'on';
             if(isset($data['chart']['legend']) && !$data['chart']['legend']) $params['legend'] = 'off';
 
