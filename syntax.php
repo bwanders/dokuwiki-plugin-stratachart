@@ -28,16 +28,18 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
 
         $cs = $this->helper->extractGroups($tree, 'chart');
         if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
-        $ts = $this->helper->extractText($cs[0]);
-        foreach($ts as $lineNode) {
-            $line = $lineNode['text'];
-            list($key, $value) = explode(':',$line);
-            $key = trim($key); $value=trim($value);
-            switch($key) {
-                case 'width': $result['chart']['width'] = intval($value); break;
-                case 'height': $result['chart']['height'] = intval($value); break;
-                case 'legend': $result['chart']['legend'] = $value=='on'; break;
-                default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
+        if(count($cs)) {
+            $ts = $this->helper->extractText($cs[0]);
+            foreach($ts as $lineNode) {
+                $line = $lineNode['text'];
+                list($key, $value) = explode(':',$line);
+                $key = trim($key); $value=trim($value);
+                switch($key) {
+                    case 'width': $result['chart']['width'] = intval($value); break;
+                    case 'height': $result['chart']['height'] = intval($value); break;
+                    case 'legend': $result['chart']['legend'] = $value=='on'; break;
+                    default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
+                }
             }
         }
     }
