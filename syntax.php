@@ -122,6 +122,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             // pass optional settings
             if(isset($data['chart']['width'])) $params['w'] = $data['chart']['width'];
             if(isset($data['chart']['height'])) $params['h'] = $data['chart']['height'];
+            if($this->getConf('antialias')) $params['aa'] = 'on';
 
             $url = DOKU_BASE.'lib/plugins/stratachart/chart.php?'.buildURLparams($params);
 

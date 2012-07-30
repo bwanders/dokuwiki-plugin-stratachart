@@ -125,6 +125,7 @@ foreach($_REQUEST as $key=>$value) {
         case 'legend-background': $settings['legend-background'] = $value; break;
         case 'legend-color': $settings['legend-color'] = $value; break;
         case 'background': $settings['background'] = $value; break;
+        case 'aa': $settings['antialias'] = $value=='on'; break;
         case 'w': $width = intval($value); break;
         case 'h': $height = intval($value); break;
         case 'd': continue; // skip data for later
