@@ -260,6 +260,10 @@ function render($width, $height, $data, $settings) {
     $pieSize = max($horzPieSize, $vertPieSize); //choose best size
     $verticalLayout = $vertPieSize > $horzPieSize;
 
+    if($pieSize <= 0) {
+        error("No space to draw pie chart\n(very small image combined\nwith enabled legend?).");
+    }
+
     /** Draw Pie Chart **/
     if($settings['antialias']) {
         // antialiased render (by way of resampling superscaled render)
