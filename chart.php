@@ -232,8 +232,9 @@ function render($width, $height, $data, $settings) {
 
     if($settings['sort']) {
         // sort slices from largest to smallest
-        usort($slices, function($a, $b) {
-            return $b[1] - $a[1];
+        usort($slices, function(&$a, &$b) {
+            if ($a[1] == $b[1]) return 0;
+            return ($a[1] > $b[1]) ? -1 : 1;
         });
     }
 
