@@ -21,6 +21,8 @@ $conf = array(
         'width' => 340,
         'height' => 300,
 
+        'fontsize' => 3,
+
         // show a legend?
         'legend' => true,
 
@@ -180,6 +182,8 @@ if($settings['significance'] < 0) {
 function render($width, $height, $data, $settings) {
     global $conf;
 
+    $fontsize = $settings['fontsize']; //size of font
+
     //create image
     $image = imagecreatetruecolor($width, $height);
     imagealphablending($image, false);
@@ -188,8 +192,8 @@ function render($width, $height, $data, $settings) {
     imagefilledrectangle($image,0,0,$width,$height,$translucent);
 
     if(isset($settings['message'])) {
-        $mw = imagefontwidth(4)*strlen($settings['message']);
-        $mh = imagefontheight(4);
+        $mw = imagefontwidth($fontsize)*strlen($settings['message']);
+        $mh = imagefontheight($fontsize);
         $messageBg = hexcolor($image, $settings['legend-background']);
         $messageFg = hexcolor($image, $settings['legend-color']);
         $messageBc = hexcolor($image, $settings['legend-border']);
@@ -208,7 +212,7 @@ function render($width, $height, $data, $settings) {
             $mboxh + $mh+8,
             $messageBc);
 
-        imagestring($image, 4, $mboxw, $mboxh, $settings['message'], $messageFg);
+        imagestring($image, $fontsize, $mboxw, $mboxh, $settings['message'], $messageFg);
         return $image;
     }
 
@@ -242,7 +246,6 @@ function render($width, $height, $data, $settings) {
     }
 
     /** measures **/
-    $fontsize = 4; //size of font
 
     $graphPadding = 1; //space between components and border
     $graphSpacing = 5; //space between components
