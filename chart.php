@@ -117,9 +117,6 @@ $height = $conf['defaults']['height'];
 $data = array();
 $settings = $conf['defaults'];
 
-$width = isset($_REQUEST['w']) ? intval($_REQUEST['w']) : $width;
-$height = isset($_REQUEST['h']) ? intval($_REQUEST['h']) : $height;
-
 foreach($_REQUEST as $key=>$value) {
     switch($key) {
         case 'legend': $settings['legend'] = $value=='on'; break;
@@ -128,6 +125,8 @@ foreach($_REQUEST as $key=>$value) {
         case 'legend-background': $settings['legend-background'] = $value; break;
         case 'legend-color': $settings['legend-color'] = $value; break;
         case 'background': $settings['background'] = $value; break;
+        case 'w': $width = intval($value); break;
+        case 'h': $height = intval($value); break;
         case 'd': continue; // skip data for later
         default: error("Unknown setting '$key'");
     }

@@ -14,8 +14,9 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
     }
 
     function handleHeader($header, &$result, &$typemap) {
+        $result['chart'] = array();
         preg_match('/(?:^<chart:pie (left|right))|(?: *>$)/',$header,$m);
-        $result['align'] = $m[1];
+        $result['chart']['align'] = $m[1];
 
         return preg_replace('/(^<chart:pie)|( *>$)/','',$header);
     }
@@ -23,6 +24,20 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
     function handleBody(&$tree, &$result, &$typemap) {
         if(count($result['fields']) != 2) {
             throw new stratabasic_exception($this->getLang('error_bad_fields'),array());
+        }
+
+        $cs = $this->helper->extractGroups($tree, 'chart');
+        if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
+        $ts = $this->helper->extractText($cs[0]);
+        foreach($ts as $lineNode) {
+            $line = $lineNode['text'];
+            list($key, $value) = explode(':',$line);
+            $key = trim($key); $value=trim($value);
+            switch($key) {
+                case 'width': $result['chart']['width'] = intval($value); break;
+                case 'height': $result['chart']['height'] = intval($value); break;
+                default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
+            }
         }
     }
 
@@ -94,13 +109,19 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             }
 
             // aligns the image (left, right or empty string)
-            $align = $data['align'];
+            $align = $data['chart']['align'];
 
             $params = array();
             $params['d'] = implode('|', $dx);
+
+            // pass colors
             $params['legend-background'] = $this->getConf('legend_background');
             $params['legend-color'] = $this->getConf('legend_color');
             $params['background'] = $this->getConf('background');
+
+            // pass optional settings
+            if(isset($data['chart']['width'])) $params['w'] = $data['chart']['width'];
+            if(isset($data['chart']['height'])) $params['h'] = $data['chart']['height'];
 
             $url = DOKU_BASE.'lib/plugins/stratachart/chart.php?'.buildURLparams($params);
 
