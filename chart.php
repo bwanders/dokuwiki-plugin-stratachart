@@ -250,7 +250,7 @@ function render($width, $height, $data, $settings) {
 
     $legendPadding = 2; //space between legend border and content
     $legendVerticalSpacing = 2; //vertical space between rows in legend
-    $legendColorboxSpacing = 2; //spacing between colored box and key
+    $legendColorboxSpacing = 4; //spacing between colored box and key
     $legendBorder = 1;
 
     $legendTextWidth =
