@@ -33,7 +33,10 @@ $conf = array(
 
         // colour settings
         'background-color' => 'ffffff',
-        'color' => '000001'
+        'color' => '000001',
+
+        // antialias the pie?
+        'antialias' => true
     )
 );
 
@@ -248,17 +251,35 @@ function render($width, $height, $data, $settings) {
     $verticalLayout = $vertPieSize > $horzPieSize;
 
     /** Draw Pie Chart **/
-    //center of pie
-    $cx = $graphPadding + $pieSize/2;
-    $cy = $graphPadding + $pieSize/2;
+    if($settings['antialias']) {
+        // antialiased render (by way of resampling superscaled render)
+        $canvas = imagecreatetruecolor($pieSize*4+8, $pieSize*4+8);
+        $canvasbg = hexcolor($canvas, $settings['background-color']);
+        imagefilledrectangle($canvas, 0,0, $pieSize*4+8, $pieSize*4+8, $canvasbg);
+
+        $cx = $cy = $pieSize*2+4;
+        $arcw = $arch = $pieSize*4;
+    } else {
+        $canvas = $image;
+
+        // center of pie
+        $cx = $cy = $graphPadding + $pieSize/2;
+        $arcw = $arch = $pieSize;
+    }
 
     $startAngle = -90;
     foreach($slices as $key => $value) {
         if($value > 0) {
             $endAngle = $startAngle + ($value/$sum) * 360;
-            imagefilledarc($image, $cx, $cy, $pieSize, $pieSize, $startAngle, $endAngle, $sliceColors[$key], IMG_ARC_PIE);
+            imagefilledarc($canvas, $cx, $cy, $arcw, $arch, $startAngle, $endAngle, $sliceColors[$key], IMG_ARC_PIE);
             $startAngle = $endAngle;
         }
+    }
+
+    // finishe antialiasing business
+    if($settings['antialias']){
+        imagecopyresampled($image, $canvas, $graphPadding,$graphPadding, 2,2, $pieSize,$pieSize, $pieSize*4+4,$pieSize*4+4);
+        imagedestroy($canvas);
     }
 
 
