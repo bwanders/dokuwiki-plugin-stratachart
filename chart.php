@@ -9,12 +9,11 @@
 $conf = array(
     // an array of hexadecimal color codes
     'colors' => array(
-        'a4a4ff',
-        'a4ffa4',
-        'ffa4a4',
-        'a4ffff',
-        'ffa4ff',
-        'ffffa4',
+        '5050ff',
+        '7070ff',
+        '9090ff',
+        'b0b0ff',
+        'd0d0ff',
     ),
 
     // default settings (can be overriden)
