@@ -117,6 +117,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             // pass colors
             $params['legend-background'] = $this->getConf('legend_background');
             $params['legend-color'] = $this->getConf('legend_color');
+            $params['legend-border'] = $this->getConf('legend_border');
             $params['background'] = $this->getConf('background');
 
             // pass optional settings

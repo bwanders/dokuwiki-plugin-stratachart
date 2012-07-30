@@ -35,6 +35,7 @@ $conf = array(
         'background' => 'ffffff',
         'legend-background' => 'ffffff',
         'legend-color' => '000000',
+        'legend-border' => '000000',
 
         // antialias the pie?
         'antialias' => false
@@ -124,6 +125,7 @@ foreach($_REQUEST as $key=>$value) {
         case 'sort': $settings['sort'] = $value=='on'; break;
         case 'legend-background': $settings['legend-background'] = $value; break;
         case 'legend-color': $settings['legend-color'] = $value; break;
+        case 'legend-border': $settings['legend-border'] = $value; break;
         case 'background': $settings['background'] = $value; break;
         case 'aa': $settings['antialias'] = $value=='on'; break;
         case 'w': $width = intval($value); break;
@@ -303,9 +305,10 @@ function render($width, $height, $data, $settings) {
 
         $legendBg = hexcolor($image, $settings['legend-background']);
         $legendFg = hexcolor($image, $settings['legend-color']);
+        $legendBc = hexcolor($image, $settings['legend-border']);
 
         imagefilledrectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendBg);
-        imagerectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendFg);
+        imagerectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendBc);
 
         $px = $lx + $legendPadding + $legendBorder;
         $py = $ly + $legendPadding + $legendBorder;
