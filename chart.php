@@ -140,7 +140,7 @@ if(isset($_REQUEST['d'])) {
     // sanity check data
     if(count($dx)%2 != 0) error('Data string incomplete. (It\'s not a complete key|value sequence)');
 
-    // unpkac data for use
+    // unpack data for use
     for($i=0;$i<count($dx);$i+=2) {
         $data[$dx[$i]] = $dx[$i+1];
     }
