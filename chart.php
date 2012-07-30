@@ -122,7 +122,7 @@ $height = $conf['defaults']['height'];
 $data = array();
 $settings = $conf['defaults'];
 
-foreach($_REQUEST as $key=>$value) {
+foreach($_GET as $key=>$value) {
     switch($key) {
         case 'legend': $settings['legend'] = $value=='on'; break;
         case 'significance': $settings['significance'] = intval($value); break;
@@ -139,9 +139,9 @@ foreach($_REQUEST as $key=>$value) {
     }
 }
 
-if(isset($_REQUEST['d'])) {
+if(isset($_GET['d'])) {
     // explode data
-    $dx = explode('|',$_REQUEST['d']);
+    $dx = explode('|',$_GET['d']);
 
     // sanity check data
     if(count($dx)%2 != 0) error('Data string incomplete. (It\'s not a complete key|value sequence)');
