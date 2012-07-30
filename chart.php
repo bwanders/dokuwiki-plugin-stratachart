@@ -206,7 +206,8 @@ function render($width, $height, $data, $settings) {
 
     /** measures **/
     $fontsize = 4; //size of font
-    $graphPadding = 5; //space between components and border
+
+    $graphPadding = 1; //space between components and border
     $graphSpacing = 5; //space between components
 
     $legendPadding = 2; //space between legend border and content
@@ -234,7 +235,10 @@ function render($width, $height, $data, $settings) {
         + $legendBorder; //needed height for legend
 
     if(!$settings['legend']) {
+        // disable legend dimensions
         $legendWidth = $legendHeight = 0;
+        // we have no components to space
+        $graphSpacing = 0;
     }
 
     $horzPieSize = min( 
