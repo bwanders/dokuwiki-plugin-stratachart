@@ -21,8 +21,6 @@ $conf = array(
         'width' => 340,
         'height' => 300,
 
-        'fontsize' => 3,
-
         // show a legend?
         'legend' => true,
 
@@ -182,7 +180,7 @@ if($settings['significance'] < 0) {
 function render($width, $height, $data, $settings) {
     global $conf;
 
-    $fontsize = $settings['fontsize']; //size of font
+    $fontsize = 3;
 
     //create image
     $image = imagecreatetruecolor($width, $height);
@@ -362,13 +360,15 @@ function render($width, $height, $data, $settings) {
         $px = $lx + $legendPadding + $legendBorder;
         $py = $ly + $legendPadding + $legendBorder;
 
+        imagealphablending($image, true);
         foreach($slices as $index=>$entry) {
             list($key, $value) = $entry;
             $color = $sliceColors[$index];
             imagefilledrectangle($image, $px, $py, $px+$legendColorboxSize, $py+$legendColorboxSize,$color);
-            imagestring($image,$fontsize,$px+$legendColorboxSize+$legendColorboxSpacing, $py, $key, $legendFg);
+            imagettftext($image, 8, 0, $px+$legendColorboxSize+$legendColorboxSpacing, $py+10, $legendFg, 'Vera', $key);
             $py += $legendVerticalSpacing + $legendTextHeight;
         }
+        imagealphablending($image, false);
     }
 
 
