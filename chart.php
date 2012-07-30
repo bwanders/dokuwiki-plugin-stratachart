@@ -140,15 +140,19 @@ foreach($_GET as $key=>$value) {
 }
 
 if(isset($_GET['d'])) {
-    // explode data
-    $dx = explode('|',$_GET['d']);
+    if(trim($_GET['d']) != '') {
+        // explode data
+        $dx = explode('|',$_GET['d']);
 
-    // sanity check data
-    if(count($dx)%2 != 0) error('Data string incomplete. (It\'s not a complete key|value sequence)');
+        // sanity check data
+        if(count($dx)%2 != 0) error('Data string incomplete. (It\'s not a complete key|value sequence)');
 
-    // unpack data for use
-    for($i=0;$i<count($dx);$i+=2) {
-        $data[] = array($dx[$i], $dx[$i+1]);
+        // unpack data for use
+        for($i=0;$i<count($dx);$i+=2) {
+            $data[] = array($dx[$i], $dx[$i+1]);
+        }
+    } else {
+        $settings['message'] = 'No data available.';
     }
 } else {
     error('No data');
@@ -182,6 +186,17 @@ function render($width, $height, $data, $settings) {
     imagesavealpha($image, true);
     $translucent = imagecolorallocatealpha($image,0,0,0,127);
     imagefilledrectangle($image,0,0,$width,$height,$translucent);
+
+    if(isset($settings['message'])) {
+        $mw = imagefontwidth(4)*strlen($settings['message']);
+        $mh = imagefontheight(4);
+//        $messageBg = hexcolor($image, $settings['legend-background']);
+        $messageFg = hexcolor($image, $settings['legend-color']);
+//        $messageBc = hexcolor($image, $settings['legend-border']);
+//        imagefilledrectangle($image, $width/2-$mw/2, $height/2-$mh/2,$mw,$mh,$messageBg);
+        imagestring($image, 4, $width/2-$mw/2, $height/2-$mh/2, $settings['message'], $messageFg);
+        return $image;
+    }
 
     $slices = array();
     $sliceColors = array();
