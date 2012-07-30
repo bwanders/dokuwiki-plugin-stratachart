@@ -10,10 +10,13 @@ if (!defined('DOKU_INC')) die('Meh.');
 
 class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('<chart:pie'.$this->helper->fieldsShortPattern().'* *>\s*?\n.+?\n\s*?</chart>',$mode, 'plugin_stratachart');
+        $this->Lexer->addSpecialPattern('<chart:pie (?:left|right)?'.$this->helper->fieldsShortPattern().'* *>\s*?\n.+?\n\s*?</chart>',$mode, 'plugin_stratachart');
     }
 
     function handleHeader($header, &$result, &$typemap) {
+        preg_match('/(?:^<chart:pie (left|right))|(?: *>$)/',$header,$m);
+        $result['align'] = $m[1];
+
         return preg_replace('/(^<chart:pie)|( *>$)/','',$header);
     }
 
@@ -90,6 +93,9 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
                 $dx[]=str_replace('|',' ',$value);
             }
 
+            // aligns the image (left, right or empty string)
+            $align = $data['align'];
+
             $params = array();
             $params['d'] = implode('|', $dx);
 
@@ -97,6 +103,9 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
 
             $R->doc .= '<img src="'.$url.'"';
             $R->doc .= ' class="media'.$align.'"';
+            // make left/right alignment for no-CSS view work (feeds)
+            if($align == 'right') $ret .= ' align="right"';
+            if($align == 'left')  $ret .= ' align="left"';
             $R->doc .= ' />';
 
             return true;
