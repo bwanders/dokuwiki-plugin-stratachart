@@ -1,4 +1,5 @@
 <?php
 
-$conf['background_color'] = '000000';
-$conf['color'] = 'ffffff';
+$conf['legend_background'] = 'ffffff';
+$conf['legend_color'] = '000000';
+$conf['background'] = 'ffffff';

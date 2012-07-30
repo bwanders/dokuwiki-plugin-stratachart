@@ -32,8 +32,9 @@ $conf = array(
         'sort' => true,
 
         // colour settings
-        'background-color' => 'ffffff',
-        'color' => '000001',
+        'background' => 'ffffff',
+        'legend-background' => 'ffffff',
+        'legend-color' => '000000',
 
         // antialias the pie?
         'antialias' => false
@@ -124,8 +125,9 @@ foreach($_REQUEST as $key=>$value) {
         case 'legend': $settings['legend'] = $value=='on'; break;
         case 'significance': $settings['significance'] = intval($value); break;
         case 'sort': $settings['sort'] = $value=='on'; break;
-        case 'background-color': $settings['background-color'] = $value; break;
-        case 'color': $settings['color'] = $value; break;
+        case 'legend-background': $settings['legend-background'] = $value; break;
+        case 'legend-color': $settings['legend-color'] = $value; break;
+        case 'background': $settings['background'] = $value; break;
         case 'd': continue; // skip data for later
         default: error("Unknown setting '$key'");
     }
@@ -169,6 +171,8 @@ function render($width, $height, $data, $settings) {
 
     //create image
     $image = imagecreatetruecolor($width, $height);
+    imagealphablending($image, false);
+    imagesavealpha($image, true);
     $translucent = imagecolorallocatealpha($image,0,0,0,127);
     imagefilledrectangle($image,0,0,$width,$height,$translucent);
 
@@ -254,7 +258,7 @@ function render($width, $height, $data, $settings) {
         $aa = 4;
 
         $canvas = imagecreatetruecolor($pieSize*$aa+8, $pieSize*$aa+8);
-        $canvasbg = hexcolor($canvas, $settings['background-color']);
+        $canvasbg = hexcolor($canvas, $settings['background']);
         imagefilledrectangle($canvas, 0,0, $pieSize*$aa+8, $pieSize*$aa+8, $canvasbg);
 
         $cx = $cy = $pieSize*($aa/2)+4;
@@ -295,11 +299,11 @@ function render($width, $height, $data, $settings) {
             $ly = $graphPadding;
         }
 
-        $white = hexcolor($image, $settings['background-color']);
-        $black = hexcolor($image, $settings['color']);
+        $legendBg = hexcolor($image, $settings['legend-background']);
+        $legendFg = hexcolor($image, $settings['legend-color']);
 
-        imagefilledrectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$white);
-        imagerectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$black);
+        imagefilledrectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendBg);
+        imagerectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendFg);
 
         $px = $lx + $legendPadding;
         $py = $ly + $legendPadding;
@@ -307,16 +311,13 @@ function render($width, $height, $data, $settings) {
         foreach($slices as $key=>$value) {
             $color = $sliceColors[$key];
             imagefilledrectangle($image, $px, $py, $px+$legendColorboxSize, $py+$legendColorboxSize,$color);
-            imagestring($image,$fontsize,$px+$legendColorboxSize+$legendColorboxSpacing, $py, $key, $black);
+            imagestring($image,$fontsize,$px+$legendColorboxSize+$legendColorboxSpacing, $py, $key, $legendFg);
             $py += $legendVerticalSpacing + $legendTextHeight;
         }
     }
 
 
     /** Dump image **/
-
-    imagecolortransparent($image, $translucent);
-    //imagerectangle($image,0,0,$width-1,$height-1,$black);
 
     return $image;
 }
