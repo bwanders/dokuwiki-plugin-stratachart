@@ -342,6 +342,7 @@ function render($width, $height, $data, $settings) {
 
     /** Draw Legend **/
     if($settings['legend']) {
+        putenv('GDFONTPATH=' . realpath('.'));
         if($verticalLayout) {
             $lx = $graphPadding;
             $ly = $graphPadding + $pieSize + $graphSpacing;
