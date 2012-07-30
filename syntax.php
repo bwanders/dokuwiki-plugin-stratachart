@@ -98,6 +98,8 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
 
             $params = array();
             $params['d'] = implode('|', $dx);
+            $params['background-color'] = $this->getConf('background_color');
+            $params['color'] = $this->getConf('color');
 
             $url = DOKU_BASE.'lib/plugins/stratachart/chart.php?'.buildURLparams($params);
 

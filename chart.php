@@ -119,17 +119,15 @@ $settings = $conf['defaults'];
 $width = isset($_REQUEST['w']) ? intval($_REQUEST['w']) : $width;
 $height = isset($_REQUEST['h']) ? intval($_REQUEST['h']) : $height;
 
-if(isset($_REQUEST['s'])) {
-    foreach(explode('|',$_REQUEST['s']) as $s) {
-        list($key,$value) = explode(':',$s);
-        switch($key) {
-            case 'legend': $settings['legend'] = $value=='on'; break;
-            case 'significance': $settings['significance'] = intval($value); break;
-            case 'sort': $settings['sort'] = $value=='on'; break;
-            case 'background-color': $settings['background-color'] = $value; break;
-            case 'color': $settings['color'] = $value; break;
-            default: error("Unknown setting '$key'");
-        }
+foreach($_REQUEST as $key=>$value) {
+    switch($key) {
+        case 'legend': $settings['legend'] = $value=='on'; break;
+        case 'significance': $settings['significance'] = intval($value); break;
+        case 'sort': $settings['sort'] = $value=='on'; break;
+        case 'background-color': $settings['background-color'] = $value; break;
+        case 'color': $settings['color'] = $value; break;
+        case 'd': continue; // skip data for later
+        default: error("Unknown setting '$key'");
     }
 }
 
