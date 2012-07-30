@@ -50,8 +50,13 @@ $conf = array(
 
 // color allocation function
 function hexcolor($image, $hex) {
+    list($r,$g,$b) = hex2rgb($hex);
+    return imagecolorallocate($image, $r, $g, $b);
+}
+
+function hex2rgb($hex) {
     $i = hexdec($hex);
-    return imagecolorallocate($image, 0xFF & ($i >> 0x10), 0xFF & ($i >> 0x8), 0xFF & ($i));
+    return array(0xFF & ($i >> 0x10), 0xFF & ($i >> 0x8), 0xFF & ($i));
 }
 
 /*
