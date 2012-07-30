@@ -1,0 +1,7 @@
+base   stratachart
+author Brend Wanders
+email  b.wanders@utwente.nl
+date   2012-07-30
+name   Strata Chart
+desc   Simple chart plugin filled with queried data
+url    http://github.com/bwanders/dokuwiki-plugin-stratachart
