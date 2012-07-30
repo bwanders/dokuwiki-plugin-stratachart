@@ -144,7 +144,7 @@ if(isset($_REQUEST['d'])) {
 
     // unpack data for use
     for($i=0;$i<count($dx);$i+=2) {
-        $data[$dx[$i]] = $dx[$i+1];
+        $data[] = array($dx[$i], $dx[$i+1]);
     }
 } else {
     error('No data');
@@ -153,7 +153,8 @@ if(isset($_REQUEST['d'])) {
 
 // auto-detect significance
 if($settings['significance'] < 0) {
-    foreach($data as $value) {
+    foreach($data as $entry) {
+        list($key, $value) = $entry;
         $settings['significance'] = max(
             $settings['significance'], 
             strlen(strval($value-floor($value)))-2
@@ -184,10 +185,11 @@ function render($width, $height, $data, $settings) {
 
     $longestKey = '';
 
-    foreach($data as $key=>$value) {
+    foreach($data as $entry) {
+        list($key, $value) = $entry;
         $key = "$key (".number_format($value,$settings['significance'],"."," ").")";
 
-        $slices[$key] = $value;
+        $slices[] = array($key, $value);
         $sum = $sum + $value;
 
         if(strlen($longestKey) < strlen($key)) $longestKey = $key;
@@ -195,12 +197,14 @@ function render($width, $height, $data, $settings) {
 
     if($settings['sort']) {
         // sort slices from largest to smallest
-        arsort($slices, SORT_NUMERIC);
+        usort($slices, function($a, $b) {
+            return $b[1] - $a[1];
+        });
     }
 
     $numSlices = 0;
-    foreach($slices as $key=>$value) {
-        $sliceColors[$key] = hexcolor($image,$conf['colors'][$numSlices % count($conf['colors'])]);
+    foreach($slices as $index=>$entry) {
+        $sliceColors[$index] = hexcolor($image,$conf['colors'][$numSlices % count($conf['colors'])]);
         $numSlices++;
     }
 
@@ -286,10 +290,11 @@ function render($width, $height, $data, $settings) {
 
     // draw actual pie
     $startAngle = -90;
-    foreach($slices as $key => $value) {
+    foreach($slices as $index=>$entry) {
+        list($key,$value) = $entry;
         if($value > 0) {
             $endAngle = $startAngle + ($value/$sum) * 360;
-            imagefilledarc($canvas, $cx, $cy, $arcw, $arch, $startAngle, $endAngle, $sliceColors[$key], IMG_ARC_PIE);
+            imagefilledarc($canvas, $cx, $cy, $arcw, $arch, $startAngle, $endAngle, $sliceColors[$index], IMG_ARC_PIE);
             $startAngle = $endAngle;
         }
     }
@@ -321,8 +326,9 @@ function render($width, $height, $data, $settings) {
         $px = $lx + $legendPadding + $legendBorder;
         $py = $ly + $legendPadding + $legendBorder;
 
-        foreach($slices as $key=>$value) {
-            $color = $sliceColors[$key];
+        foreach($slices as $index=>$entry) {
+            list($key, $value) = $entry;
+            $color = $sliceColors[$index];
             imagefilledrectangle($image, $px, $py, $px+$legendColorboxSize, $py+$legendColorboxSize,$color);
             imagestring($image,$fontsize,$px+$legendColorboxSize+$legendColorboxSpacing, $py, $key, $legendFg);
             $py += $legendVerticalSpacing + $legendTextHeight;
