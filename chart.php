@@ -210,6 +210,7 @@ function render($width, $height, $data, $settings) {
     $legendPadding = 2; //space between legend border and content
     $legendVerticalSpacing = 2; //vertical space between rows in legend
     $legendColorboxSpacing = 2; //spacing between colored box and key
+    $legendBorder = 1;
 
     $legendTextWidth =
         imagefontwidth($fontsize) * strlen($longestKey); // width of longest key in legend
@@ -227,7 +228,8 @@ function render($width, $height, $data, $settings) {
 
     $legendHeight = 
         2*$legendPadding 
-        + $numSlices*($legendVerticalSpacing + $legendTextHeight); //needed height for legend
+        + $numSlices*($legendVerticalSpacing + $legendTextHeight) - $legendVerticalSpacing
+        + $legendBorder; //needed height for legend
 
     if(!$settings['legend']) {
         $legendWidth = $legendHeight = 0;
@@ -305,8 +307,8 @@ function render($width, $height, $data, $settings) {
         imagefilledrectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendBg);
         imagerectangle($image,$lx,$ly,$lx+$legendWidth,$ly+$legendHeight,$legendFg);
 
-        $px = $lx + $legendPadding;
-        $py = $ly + $legendPadding;
+        $px = $lx + $legendPadding + $legendBorder;
+        $py = $ly + $legendPadding + $legendBorder;
 
         foreach($slices as $key=>$value) {
             $color = $sliceColors[$key];
