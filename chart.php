@@ -329,6 +329,7 @@ function render($width, $height, $data, $settings) {
         list($key,$value) = $entry;
         if($value > 0) {
             $endAngle = $startAngle + ($value/$sum) * 360;
+            if($index == count($slices)-1) $endAngle = 270; // final degree forced taken
             imagefilledarc($canvas, $cx, $cy, $arcw, $arch, $startAngle, $endAngle, $sliceColors[$index], IMG_ARC_PIE);
             $startAngle = $endAngle;
         }
