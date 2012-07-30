@@ -152,7 +152,7 @@ if(isset($_GET['d'])) {
             $data[] = array($dx[$i], $dx[$i+1]);
         }
     } else {
-        $settings['message'] = 'No data available.';
+        $settings['message'] = 'No data available';
     }
 } else {
     error('No data');
@@ -190,11 +190,25 @@ function render($width, $height, $data, $settings) {
     if(isset($settings['message'])) {
         $mw = imagefontwidth(4)*strlen($settings['message']);
         $mh = imagefontheight(4);
-//        $messageBg = hexcolor($image, $settings['legend-background']);
+        $messageBg = hexcolor($image, $settings['legend-background']);
         $messageFg = hexcolor($image, $settings['legend-color']);
-//        $messageBc = hexcolor($image, $settings['legend-border']);
-//        imagefilledrectangle($image, $width/2-$mw/2, $height/2-$mh/2,$mw,$mh,$messageBg);
-        imagestring($image, 4, $width/2-$mw/2, $height/2-$mh/2, $settings['message'], $messageFg);
+        $messageBc = hexcolor($image, $settings['legend-border']);
+        $mboxw = $width/2-$mw/2;
+        $mboxh = $height/2-$mh/2;
+        imagefilledrectangle($image, 
+            $mboxw - 10, 
+            $mboxh - 8,
+            $mboxw + $mw+10,
+            $mboxh + $mh+8,
+            $messageBg);
+        imagerectangle($image, 
+            $mboxw - 10, 
+            $mboxh - 8,
+            $mboxw + $mw+10,
+            $mboxh + $mh+8,
+            $messageBc);
+
+        imagestring($image, 4, $mboxw, $mboxh, $settings['message'], $messageFg);
         return $image;
     }
 
