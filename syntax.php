@@ -22,7 +22,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
     }
 
     function handleBody(&$tree, &$result, &$typemap) {
-        if(count($result['fields']) != 2) {
+        if(count($result['fields']) < 2) {
             throw new stratabasic_exception($this->getLang('error_bad_fields'),array());
         }
 
