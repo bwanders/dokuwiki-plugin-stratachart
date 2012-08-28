@@ -6,18 +6,25 @@ jQuery(function() {
     jQuery('.stratachart_pie').each(function(_,e) {
         var $chart = jQuery(e);
         var data = jQuery.parseJSON($chart.attr('data-pie'));
-        var significance = $chart.attr('data-significance');
-        var legend = $chart.attr('data-legend');
+        var options = jQuery.parseJSON($chart.attr('data-options'));
         jQuery.plot($chart, data, {
             series: { 
                 pie: {
-                    show: true
-                }
+                    show: true,
+                    stroke: {
+                        color: options.strokeColor
+                    },
+                    label: {
+                        formatter: function(label, series) {
+                            return "<div style='font-size:small; text-align: center; padding: 2px; color: " + series.color + "; font-weight: bold;'>" + label + "</div>";
+                        }
+                    }
+                },
             },
             legend: {
-                show: (legend=='1'),
+                show: options.legend,
                 labelFormatter: function(label, series) {
-                    return label + ' (' + series.data[0][1].toFixed(significance) + ')';
+                    return label + ' (' + series.data[0][1].toFixed(options.significance) + ')';
                 }
             }
         });

@@ -145,9 +145,15 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
 
             $slices = json_encode($dx, JSON_HEX_APOS);
 
+            $options = json_encode(array(
+                'legend'=>$data['chart']['legend'],
+                'significance'=>$data['chart']['significance'],
+                'strokeColor'=>$this->getConf('background_colour')
+            ), JSON_HEX_APOS);
+
             $R->doc .= '<div style="width:'.$data['chart']['width'].'px;height:'.$data['chart']['height'].'px;"';
             $R->doc .= ' class="stratachart stratachart_pie media'.$align.'"';
-            $R->doc .= ' data-pie=\''.$slices.'\' data-significance="'.$data['chart']['significance'].'" data-legend="'.$data['chart']['legend'].'"';
+            $R->doc .= ' data-pie=\''.$slices.'\' data-options=\''.$options.'\'';
             // make left/right alignment for no-CSS view work (feeds)
             if($align == 'right') $ret .= ' align="right"';
             if($align == 'left')  $ret .= ' align="left"';
