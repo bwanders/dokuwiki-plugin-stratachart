@@ -25,8 +25,7 @@ jQuery(function() {
                 show: options.legend,
                 labelFormatter: function(label, series) {
                     return label + ' (' + series.data[0][1].toFixed(options.significance) + ')';
-                },
-                container: (typeof options.legendBox == 'string' ? '.wrap_' + options.legendBox : null)
+                }
             }
         });
     });

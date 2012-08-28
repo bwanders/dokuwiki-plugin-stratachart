@@ -46,7 +46,6 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
                     case 'legend': $result['chart']['legend'] = $value=='on'; break;
                     case 'sort': $result['chart']['sort'] = $value=='on'; break;
                     case 'significance': $result['chart']['significance'] = intval($value); break;
-                    case 'legend into': $result['chart']['legendbox'] = $value; break;
                     default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
                 }
             }
@@ -150,7 +149,6 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
                 'legend'=>$data['chart']['legend'],
                 'significance'=>$data['chart']['significance'],
                 'strokeColor'=>$this->getConf('background_colour'),
-                'legendBox'=>$data['chart']['legendbox']
             ), JSON_HEX_APOS);
 
             $R->doc .= '<div style="width:'.$data['chart']['width'].'px;height:'.$data['chart']['height'].'px;"';
