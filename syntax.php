@@ -22,9 +22,15 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
     }
 
     function handleBody(&$tree, &$result, &$typemap) {
-        if(count($result['fields']) < 2) {
+        if(count($result['fields']) != 2) {
             throw new stratabasic_exception($this->getLang('error_bad_fields'),array());
         }
+        
+        $result['chart']['width'] = 400;
+        $result['chart']['height'] = 300;
+        $result['chart']['legend'] = true;
+        $result['chart']['sort'] = true;
+        $result['chart']['significance'] = -1;
 
         $cs = $this->helper->extractGroups($tree, 'chart');
         if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
@@ -107,40 +113,45 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             $result->closeCursor();
 
             $dx = array();
+
+            // sort largest to smallest
+            if($data['chart']['sort']) {
+                usort($pairs, function($a, $b) {
+                    if($a[1] == $b[1]) return 0;
+                    if($a[1] > $b[1]) return -1;
+                    if($a[1] < $b[1]) return 1;
+                });
+            }
+
+            // auto-detect significance
+            if($data['chart']['significance'] < 0) {
+                foreach($pairs as $entry) {
+                    list($key, $value) = $entry;
+                    $data['chart']['significance'] = max(
+                        $data['chart']['significance'], 
+                        strlen(strval($value-floor($value)))-2
+                    );
+                }
+            }
+
+            // create pairs
             foreach($pairs as $p) {
                 list($key,$value) = $p;
-                $dx[]=str_replace('|',' ',$key);
-                $dx[]=str_replace('|',' ',$value);
+                $dx[] = array('label'=>$key, 'data'=>(0+$value));
             }
 
             // aligns the image (left, right or empty string)
             $align = $data['chart']['align'];
 
-            $params = array();
-            $params['d'] = implode('|', $dx);
+            $slices = json_encode($dx, JSON_HEX_APOS);
 
-            // pass colors
-            $params['legend-background'] = $this->getConf('legend_background');
-            $params['legend-color'] = $this->getConf('legend_color');
-            $params['legend-border'] = $this->getConf('legend_border');
-            $params['background'] = $this->getConf('background');
-
-            // pass optional settings
-            if(isset($data['chart']['width'])) $params['w'] = $data['chart']['width'];
-            if(isset($data['chart']['height'])) $params['h'] = $data['chart']['height'];
-            if(isset($data['chart']['significance'])) $params['significance'] = $data['chart']['significance'];
-            if($this->getConf('antialias')) $params['aa'] = 'on';
-            if(isset($data['chart']['legend']) && !$data['chart']['legend']) $params['legend'] = 'off';
-            if(isset($data['chart']['sort']) && !$data['chart']['sort']) $params['sort'] = 'off';
-
-            $url = DOKU_BASE.'lib/plugins/stratachart/chart.php?'.buildURLparams($params);
-
-            $R->doc .= '<img src="'.$url.'"';
-            $R->doc .= ' class="media'.$align.'"';
+            $R->doc .= '<div style="width:'.$data['chart']['width'].'px;height:'.$data['chart']['height'].'px;"';
+            $R->doc .= ' class="stratachart stratachart_pie media'.$align.'"';
+            $R->doc .= ' data-pie=\''.$slices.'\' data-significance="'.$data['chart']['significance'].'" data-legend="'.$data['chart']['legend'].'"';
             // make left/right alignment for no-CSS view work (feeds)
             if($align == 'right') $ret .= ' align="right"';
             if($align == 'left')  $ret .= ' align="left"';
-            $R->doc .= ' />';
+            $R->doc .= '></div>';
 
             return true;
         } elseif($mode == 'metadata') {
