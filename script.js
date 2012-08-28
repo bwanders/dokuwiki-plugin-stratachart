@@ -1,6 +1,6 @@
-/* DOKUWIKI:include_once flot/jquery.flot.js */
-/* DOKUWIKI:include_once flot/jquery.flot.pie.js */
-/* DOKUWIKI:include_once flot/excanvas.js */
+/* DOKUWIKI:include_once flot/jquery.flot.min.js */
+/* DOKUWIKI:include_once flot/jquery.flot.pie.min.js */
+/* DOKUWIKI:include_once flot/excanvas.min.js */
 
 jQuery(function() {
     jQuery('.stratachart_pie').each(function(_,e) {
