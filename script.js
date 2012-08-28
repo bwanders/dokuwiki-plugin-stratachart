@@ -4,10 +4,12 @@
 
 jQuery(function() {
     jQuery('.stratachart_pie').each(function(_,e) {
+        var g = function(x){console.log(x); return x;}
+
         var $chart = jQuery(e);
         var data = jQuery.parseJSON($chart.attr('data-pie'));
         var options = jQuery.parseJSON($chart.attr('data-options'));
-        jQuery.plot($chart, data, {
+        jQuery.plot($chart, data, g({
             series: { 
                 pie: {
                     show: true,
@@ -25,9 +27,10 @@ jQuery(function() {
                 show: options.legend,
                 labelFormatter: function(label, series) {
                     return label + ' (' + series.data[0][1].toFixed(options.significance) + ')';
-                }
+                },
+                container: (typeof options.legendBox == 'string') ? '.wrap_' + options.legendBox : null
             }
-        });
+        }));
     });
 
 });
