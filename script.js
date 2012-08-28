@@ -17,11 +17,11 @@ jQuery(function() {
             legend: {
                 show: (legend=='1'),
                 labelFormatter: function(label, series) {
-                    console.log(label,series);
-                    return label+' ('+series.data[0][1].toFixed(significance)+')';
+                    return label + ' (' + series.data[0][1].toFixed(significance) + ')';
                 }
-            },
+            }
         });
     });
 
 });
+
