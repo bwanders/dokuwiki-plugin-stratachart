@@ -127,9 +127,10 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
             if($data['chart']['significance'] < 0) {
                 foreach($pairs as $entry) {
                     list($key, $value) = $entry;
+
                     $data['chart']['significance'] = max(
                         $data['chart']['significance'], 
-                        strlen(strval($value-floor($value)))-2
+                        ($value - floor($value) == 0) ? 1 : strlen(strval($value-floor($value)))-2
                     );
                 }
             }
