@@ -130,7 +130,7 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
 
                     $data['chart']['significance'] = max(
                         $data['chart']['significance'], 
-                        ($value - floor($value) == 0) ? 1 : strlen(strval($value-floor($value)))-2
+                        ($value - floor($value) == 0) ? 0 : strlen(strval($value-floor($value)))-2
                     );
                 }
             }
