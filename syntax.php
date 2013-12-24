@@ -8,9 +8,9 @@
  
 if (!defined('DOKU_INC')) die('Meh.');
 
-class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
+class syntax_plugin_stratachart extends syntax_plugin_strata_select {
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('<chart:pie (?:left|right)?'.$this->helper->fieldsShortPattern().'* *>\s*?\n.+?\n\s*?</chart>',$mode, 'plugin_stratachart');
+        $this->Lexer->addSpecialPattern('<chart:pie(?: (?:left|right))?'.$this->helper->fieldsShortPattern().'* *>\s*?\n.+?\n\s*?</chart>',$mode, 'plugin_stratachart');
     }
 
     function handleHeader($header, &$result, &$typemap) {
@@ -77,10 +77,10 @@ class syntax_plugin_stratachart extends syntax_plugin_stratabasic_select {
         foreach($data['fields'] as $meta) {
             $fields[] = array(
                 'variable'=>$meta['variable'],
-                'type'=>$this->types->loadType($meta['type']),
+                'type'=>$this->util->loadType($meta['type']),
                 'typeName'=>$meta['type'],
                 'hint'=>$meta['hint'],
-                'aggregate'=>$this->types->loadAggregate($meta['aggregate']),
+                'aggregate'=>$this->util->loadAggregate($meta['aggregate']),
                 'aggergateHint'=>$meta['aggregateHint']
             );
         }
