@@ -16,7 +16,7 @@ jQuery(function() {
                     },
                     label: {
                         formatter: function(label, series) {
-                            return "<div style='font-size:small; text-align: center; padding: 2px; color: " + series.color + "; font-weight: bold;'>" + label + "</div>";
+                            return "<div style='font-size: smaller; text-align: center; padding: 2px;'>" + label + "</div>";
                         }
                     }
                 },
