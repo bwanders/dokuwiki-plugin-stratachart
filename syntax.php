@@ -32,23 +32,23 @@ class syntax_plugin_stratachart extends syntax_plugin_strata_select {
         $result['chart']['sort'] = true;
         $result['chart']['significance'] = -1;
 
+        $config = array(
+            'width'  => array('pattern'=>'/^[0-9]+$/', 'default'=>'400'),
+            'height' => array('pattern'=>'/^[0-9]+$/', 'default'=>'300'),
+            'legend' => array('choices'=>array('on'=>array('on','true'), 'off'=>array('off','false')), 'default'=>'on'),
+            'sort'   => array('choices'=>array('on'=>array('on','true'), 'off'=>array('off','false')), 'default'=>'on'),
+            'significance' => array('pattern'=>'/^[0-9]+$/', 'default'=>'-1')
+        );
+
         $cs = $this->helper->extractGroups($tree, 'chart');
         if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
         if(count($cs)) {
-            $ts = $this->helper->extractText($cs[0]);
-            foreach($ts as $lineNode) {
-                $line = $lineNode['text'];
-                list($key, $value) = explode(':',$line);
-                $key = trim($key); $value=trim($value);
-                switch($key) {
-                    case 'width': $result['chart']['width'] = intval($value); break;
-                    case 'height': $result['chart']['height'] = intval($value); break;
-                    case 'legend': $result['chart']['legend'] = $value=='on'; break;
-                    case 'sort': $result['chart']['sort'] = $value=='on'; break;
-                    case 'significance': $result['chart']['significance'] = intval($value); break;
-                    default: throw new stratabasic_exception($this->getLang('error_unknown_setting'), array($lineNode));
-                }
-            }
+            $settings = $this->helper->setProperties($config, $cs);
+            $result['chart'] = array_merge($result['chart'], array_map(function($x) { return $x[0]; }, $settings));
+        }
+
+        foreach(array('legend', 'sort') as $key) {
+            $result['chart'][$key] = $result['chart'][$key] == 'on';
         }
     }
 
