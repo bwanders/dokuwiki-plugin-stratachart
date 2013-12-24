@@ -25,28 +25,26 @@ class syntax_plugin_stratachart extends syntax_plugin_strata_select {
         if(count($result['fields']) != 2) {
             throw new stratabasic_exception($this->getLang('error_bad_fields'),array());
         }
-        
-        $result['chart']['width'] = 400;
-        $result['chart']['height'] = 300;
-        $result['chart']['legend'] = true;
-        $result['chart']['sort'] = true;
-        $result['chart']['significance'] = -1;
 
+        $cs = $this->helper->extractGroups($tree, 'chart');
+        if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
+
+        // create empty group so we can always grab settings (and use defaults if needed)
+        if(empty($cs)) $cs = array();
+
+        // parse settings
         $config = array(
             'width'  => array('pattern'=>'/^[0-9]+$/', 'default'=>'400'),
             'height' => array('pattern'=>'/^[0-9]+$/', 'default'=>'300'),
             'legend' => array('choices'=>array('on'=>array('on','true'), 'off'=>array('off','false')), 'default'=>'on'),
             'sort'   => array('choices'=>array('on'=>array('on','true'), 'off'=>array('off','false')), 'default'=>'on'),
-            'significance' => array('pattern'=>'/^[0-9]+$/', 'default'=>'-1')
+            'significance' => array('pattern'=>'/^([0-9]+)|(detect)$/', 'default'=>'detect')
         );
 
-        $cs = $this->helper->extractGroups($tree, 'chart');
-        if(count($cs) > 1) throw new stratabasic_exception($this->getLang('error_too_many_settings'), $cs);
-        if(count($cs)) {
-            $settings = $this->helper->setProperties($config, $cs);
-            $result['chart'] = array_merge($result['chart'], array_map(function($x) { return $x[0]; }, $settings));
-        }
+        $settings = $this->helper->setProperties($config, $cs);
+        $result['chart'] = array_merge($result['chart'], array_map(function($x) { return $x[0]; }, $settings));
 
+        // convert on/off settings to booleans
         foreach(array('legend', 'sort') as $key) {
             $result['chart'][$key] = $result['chart'][$key] == 'on';
         }
@@ -71,6 +69,7 @@ class syntax_plugin_stratachart extends syntax_plugin_strata_select {
 
         // execute the query
         $result = $this->triples->queryRelations($query);
+
 
         // prepare all 'columns'
         $fields = array();
@@ -124,15 +123,18 @@ class syntax_plugin_stratachart extends syntax_plugin_strata_select {
             }
 
             // auto-detect significance
-            if($data['chart']['significance'] < 0) {
+            if($data['chart']['significance'] == 'detect') {
+                $significance = -1;
                 foreach($pairs as $entry) {
                     list($key, $value) = $entry;
 
-                    $data['chart']['significance'] = max(
-                        $data['chart']['significance'], 
+                    $significance = max(
+                        $significance, 
                         ($value - floor($value) == 0) ? 0 : strlen(strval($value-floor($value)))-2
                     );
                 }
+            } else {
+                $significance = $data['chart']['significance'];
             }
 
             // create pairs
@@ -148,7 +150,7 @@ class syntax_plugin_stratachart extends syntax_plugin_strata_select {
 
             $options = json_encode(array(
                 'legend'=>$data['chart']['legend'],
-                'significance'=>$data['chart']['significance'],
+                'significance'=>$significance,
                 'strokeColor'=>$this->getConf('background_colour'),
             ), JSON_HEX_APOS);
 
