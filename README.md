@@ -1,6 +1,6 @@
-dokuwiki-plugin-stratachart
-===========================
+Strata Chart
+============
 
-:warning: This plugin is incompatible with the current version of [bwanders/dokuwiki-strata](https://github.com/bwanders/dokuwiki-strata).
+This plugin depends on [bwanders/dokuwiki-strata](https://github.com/bwanders/dokuwiki-strata).
 
-A strata query backed chart plugin
+A Strata plugin for drawing charts based on data in your wiki.
